@@ -12,7 +12,7 @@ Frontend part (to describe).
 
 ## Available test solvers
 
-### Choose a suitable word from the list.
+### Choose a suitable word from a given list
 
 This task is solved using `bert-base-uncased` model on user's CPU.
 
