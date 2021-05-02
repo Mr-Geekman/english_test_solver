@@ -14,7 +14,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # download models for backend
 RUN mkdir models/BertBase
 RUN wget https://huggingface.co/bert-base-uncased/resolve/main/config.json -O models/BertBase/config.json
-RUN wget https://huggingface.co/bert-base-uncased/blob/main/vocab.txt -O models/BertBase/vocab.txt
+RUN wget https://huggingface.co/bert-base-uncased/resolve/main/vocab.txt -O models/BertBase/vocab.txt
 RUN wget https://huggingface.co/bert-base-uncased/resolve/main/pytorch_model.bin -O models/BertBase/pytorch_model.bin
 
 # make migrations
