@@ -1,4 +1,5 @@
 import numpy as np
+from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import TestItemSerializer
@@ -7,6 +8,8 @@ from .apps import ChooseWordConfig
 
 class ChooseWordBertView(APIView):
     """Controller for running model."""
+
+    parser_classes = [JSONParser]
 
     def post(self, request):
         serializer = TestItemSerializer(data=request.data)
