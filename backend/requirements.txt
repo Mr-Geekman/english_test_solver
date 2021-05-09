@@ -3,11 +3,13 @@ certifi==2020.12.5
 chardet==4.0.0
 click==7.1.2
 Django==3.2
+django-cors-headers==3.7.0
 djangorestframework==3.12.4
 filelock==3.0.12
 idna==2.10
 importlib-metadata==4.0.1
 joblib==1.0.1
+nltk==3.6.2
 numpy==1.20.2
 packaging==20.9
 pyparsing==2.4.7
@@ -24,4 +26,3 @@ transformers==4.5.1
 typing-extensions==3.10.0.0
 urllib3==1.26.4
 zipp==3.4.1
-django-cors-headers==3.7.0

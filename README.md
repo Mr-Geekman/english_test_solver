@@ -21,3 +21,12 @@ This task is solved using `bert-base-uncased` model on user's CPU.
 1. Install Docker.
 2. Install Docker Compose
 3. To explain later...
+
+## Development
+
+To develop frontent you need to run backend server. To do this you should:
+1. Install Docker.
+2. Build Dockerfile from backend folder.
+3. Run docker container with option `-p 8000:8000`.
+
+After this, you can make requests to server on localhost:8000 from localhost:3000.
