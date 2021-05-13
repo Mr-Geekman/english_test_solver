@@ -128,7 +128,7 @@ export default {
         this.is_show_result = true;
       }).catch(response => {
         this.is_show_loading = false;
-        notify(response.data);
+        notify(response.data, 'error');
         console.log(response);
       });
     }
