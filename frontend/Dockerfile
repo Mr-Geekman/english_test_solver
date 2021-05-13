@@ -1,19 +1,22 @@
-# образ для vue: https://hub.docker.com/r/vuejs/ci
-# образ для питона: python:3.7
-# надо внутри каждого образа настроить установку зависимостей (я установлю только зависимости backend)
+FROM node:lts-alpine
 
-# FROM python:3.7
+# install simple http server for serving static content
+RUN npm install -g http-server
 
-# fix problem with timezon
-# ENV TZ=Europe/Moscow
-# RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+# make the 'app' folder the current working directory
+WORKDIR /app
 
-# clone repository (add later)
+# copy both 'package.json' and 'package-lock.json' (if available)
+COPY package*.json ./
 
-# download dependencies for backend
-# RUN apt-get update && apt-get upgrade -y
-# RUN pip3 install torch==1.8.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
-# RUN pip3 install transformers django djangorestframework 
+# install project dependencies
+RUN npm install
 
-# start container in compiled library
-# WORKDIR ~/PatternsCollection
+# copy project files and folders to the current working directory (i.e. 'app' folder)
+COPY . .
+
+# build app for production with minification
+RUN npm run build
+
+EXPOSE 8080
+CMD [ "http-server", "dist" ]
