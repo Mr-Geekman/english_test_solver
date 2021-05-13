@@ -51,7 +51,7 @@ class BertScorerCorrection:
         for sublist in tokenized_sentences['input_ids']:
             if sublist.count(self.tokenizer.mask_token_id) != 1:
                 raise ValueError(
-                    'There should be exactly one [MASK] token in a sentence.'
+                    'There should be exactly one [MASK] token in the text.'
                 )
 
         # find mask index for each sentence

@@ -33,7 +33,7 @@ def process_text_bert(
     # check if there is no redundant [UNK]-tokens
     # TODO: add escaping [UNK]-tokens and [MASK]-tokens (very unrealistic case)
     if text.count(unk_token) != len(candidates):
-        raise ValueError('There should not be [UNK]-tokens in the text!')
+        raise ValueError('There should not be [UNK] tokens in the text!')
     # split text by sentences
     sentences = sent_tokenize(text)
     sentences_candidates = []
@@ -71,12 +71,19 @@ def process_sentence_bert(
         left, right = match.span()
         # TODO: add processing too long sentences (needs tokenization)
         sentence_to_test = f'{sentence[:left]}{mask_token}{sentence[right:]}'
-        scores = ChooseWordConfig.bert_scorer_correction(
-            [sentence_to_test], [candidates[i]]
-        )[0]
-        # normalize scores
-        normalized_scores = np.exp([np.mean(x) for x in scores])
-        percents = normalized_scores / np.sum(normalized_scores)
-        results.append(percents)
-
+        try:
+            scores = ChooseWordConfig.bert_scorer_correction(
+                [sentence_to_test], [candidates[i]]
+            )[0]
+            # normalize scores
+            normalized_scores = np.exp([np.mean(x) for x in scores])
+            percents = normalized_scores / np.sum(normalized_scores)
+            results.append(percents)
+        except ValueError as e:
+            if str(e).startswith('There should be exactly one [MASK]'):
+                raise ValueError(
+                    "You shouldn't use [MASK] token in your text"
+                )
+            else:
+                raise e
     return results
