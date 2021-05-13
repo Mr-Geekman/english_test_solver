@@ -8,6 +8,8 @@ from .utils import process_text_bert
 class ChooseWordBertView(APIView):
     """Controller for running model."""
 
+    handler500 = 'rest_framework.exceptions.server_error'
+    handler400 = 'rest_framework.exceptions.bad_request'
     parser_classes = [JSONParser]
 
     def post(self, request):
