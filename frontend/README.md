@@ -1,4 +1,4 @@
-# english_test_solver_front
+# English Test Solver (frontend)
 
 ## Project setup
 ```
@@ -23,7 +23,7 @@ yarn lint
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
-# Run witch Docker
+## Run witch Docker
 
 - Download Dockerfile
 - Run for build the project: `docker build -t english_test_solver/front .`
