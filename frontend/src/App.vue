@@ -39,7 +39,7 @@ import WordSelection from "@/components/WordSelection";
 import Loading from "@/components/Loading";
 
 // Import axios and notify from const
-import {notify, send} from "@/js/const";
+import {notify, percent_min_range, send} from "@/js/const";
 
 export default {
   name: 'App',
@@ -121,7 +121,8 @@ export default {
             if (!max_candidate || max_candidate.percent < percent)
               max_candidate = {percent: percent, candidate: candidate};
           });
-          gap.set_text(max_candidate.candidate.word);
+          if (max_candidate.percent >= percent_min_range)
+            gap.set_text(max_candidate.candidate.word);
         })
         notify('Successful!');
         this.is_show_loading = false;

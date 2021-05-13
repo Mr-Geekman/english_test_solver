@@ -21,5 +21,6 @@ export const algorithms = [
   {value: 'bert/', text: 'BERT'},
   {value: 'other/', text: 'Other'}
 ];
+export const percent_min_range = 70;
 
 export const default_algorithm = 'bert/';
