@@ -158,6 +158,7 @@ export default {
   display: block;
   width: 100%;
   height: auto;
+  min-height: 50vh;
   padding: 0.375rem 0.75rem;
   font-size: 1rem;
   font-weight: 400;
@@ -169,7 +170,7 @@ export default {
   border-radius: 0.25rem;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   outline: none;
-  max-height: calc(100vh - 80px);
+  max-height: calc(100vh - 110px);
   overflow-y: auto;
 }
 
