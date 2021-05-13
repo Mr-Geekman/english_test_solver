@@ -2,9 +2,14 @@ import re
 from typing import List
 
 import numpy as np
+
+from nltk import download
 from nltk import sent_tokenize
 
 from .apps import ChooseWordConfig
+
+
+download('punkt')
 
 
 def process_text_bert(
