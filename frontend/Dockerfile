@@ -1,5 +1,12 @@
 FROM node:lts-alpine
 
+# download dependencies for frontend
+RUN apt-get update
+RUN git clone https://github.com/Mr-Geekman/english_test_solver.git
+
+# change working directory for instructions below
+WORKDIR english_test_solver/frontend
+
 # install simple http server for serving static content
 RUN npm install -g http-server
 
