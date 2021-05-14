@@ -30,7 +30,6 @@ jobs:
         cd ..
     - name: Test
       run: |
-        ls
         cd backend/
         ls
-        python backend/manage.py test
+        python manage.py test
