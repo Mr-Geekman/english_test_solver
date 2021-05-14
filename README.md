@@ -27,6 +27,8 @@ This task is solved using `bert-base-uncased` model on user's CPU.
 
 To stop containers run `docker-compose stop`.
 
+To remove them `docker-compose rm`.
+
 ## Development
 
 Look at REAMDE files of frontend and backend parts.
