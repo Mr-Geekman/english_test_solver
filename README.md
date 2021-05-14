@@ -8,7 +8,7 @@ The app starts inside docker containers and use a browser to interact with a use
 
 Backend part uses DjangoRestFramework.
 
-Frontend part (to describe).
+Frontend part uses Vue.js.
 
 ## Available test solvers
 
@@ -24,9 +24,4 @@ This task is solved using `bert-base-uncased` model on user's CPU.
 
 ## Development
 
-To develop frontent you need to run backend server. To do this you should:
-1. Install Docker.
-2. Build Dockerfile from backend folder.
-3. Run docker container with option `-p 8000:8000`.
-
-After this, you can make requests to server on localhost:8000 from localhost:3000.
+Look at REAMDE files of frontend and backend parts.

@@ -22,4 +22,5 @@ RUN wget https://huggingface.co/bert-base-uncased/resolve/main/pytorch_model.bin
 RUN python manage.py makemigrations && python manage.py migrate
 
 # run server
+EXPOSE 8000
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
