@@ -20,7 +20,7 @@ This task is solved using `bert-base-uncased` model on user's CPU.
 
 1. Install Docker
 2. Install Docker Compose
-3. Run `prepare.sh` to download Dockerfiles to build
+3. Copy and run `prepare.sh` to download the smallest amount of necessary files
 4. Run `docker-compose up` to start services
 5. Open `http://localhost:8080/` and use!
 
