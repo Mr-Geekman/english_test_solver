@@ -27,6 +27,10 @@ jobs:
         wget https://huggingface.co/bert-base-uncased/resolve/main/config.json -O models/BertBase/config.json
         wget https://huggingface.co/bert-base-uncased/resolve/main/vocab.txt -O models/BertBase/vocab.txt
         wget https://huggingface.co/bert-base-uncased/resolve/main/pytorch_model.bin -O models/BertBase/pytorch_model.bin
+        cd ..
     - name: Test
       run: |
-        python manage.py text
+        ls
+        cd backend/
+        ls
+        python backend/manage.py test
