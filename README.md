@@ -1,3 +1,5 @@
+[![backend](https://github.com/Mr-Geekman/english_test_solver/actions/workflows/backend.yml/badge.svg?branch=master)](https://github.com/Mr-Geekman/english_test_solver/actions/workflows/backend.yml)
+
 # English Test Solver
 
 This project has a goal to create a simple app for solving tests of English knowledge using modern techniques of NLP. 
