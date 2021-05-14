@@ -1,5 +1,5 @@
-import re
 from typing import List
+from copy import copy
 
 import numpy as np
 
@@ -61,19 +61,47 @@ def process_sentence_bert(
 
     :returns: percent of each candidate in each gap
     """
-    unk_token = ChooseWordConfig.tokenizer.unk_token
-    mask_token = ChooseWordConfig.tokenizer.mask_token
+    # TODO: add processing of bigger context (few sentences)
+    # tokenize sentence and candidates
+    tokenizer = ChooseWordConfig.tokenizer
+    tokenized_sentence = tokenizer(
+        sentence,
+        add_special_tokens=False,
+        padding=False,
+        truncation='do_not_truncate',
+    )['input_ids']
 
-    # process each gap separately
     results = []
-    pattern = unk_token.replace('[', '\[').replace(']', '\]')
-    for i, match in enumerate(re.finditer(pattern, sentence)):
-        left, right = match.span()
-        # TODO: add processing too long sentences (needs tokenization)
-        sentence_to_test = f'{sentence[:left]}{mask_token}{sentence[right:]}'
+    # process each gap separately
+    gap_idx = 0
+    for i, token_id in enumerate(tokenized_sentence):
+        if token_id != tokenizer.unk_token_id:
+            continue
+        current_tokenized_sentence = copy(tokenized_sentence)
+        current_tokenized_sentence[i] = tokenizer.mask_token_id
+
+        # find maximum length of candidate in each gap
+        tokenized_candidates = tokenizer(
+            candidates[gap_idx],
+            add_special_tokens=False,
+            padding=False,
+            truncation='do_not_truncate',
+        )['input_ids']
+        max_len = max([len(x) for x in tokenized_candidates])
+
+        # limit sentence to fit in maximum size
+        # -2 added for compensation of rounding, -5 is arbitrary
+        radius = ChooseWordConfig.max_bert_size // 2 - max_len // 2 - 2 - 5
+        start_idx = max(0, i-radius)
+        end_idx = min(len(current_tokenized_sentence), i+radius)
+        current_tokenized_sentence = current_tokenized_sentence[
+                                     start_idx:end_idx
+                                     ]
+        current_sentence = tokenizer.decode(current_tokenized_sentence)
+
         try:
             scores = ChooseWordConfig.bert_scorer_correction(
-                [sentence_to_test], [candidates[i]]
+                [current_sentence], [candidates[gap_idx]]
             )[0]
             # normalize scores
             normalized_scores = np.exp([np.mean(x) for x in scores])
@@ -82,8 +110,10 @@ def process_sentence_bert(
         except ValueError as e:
             if str(e).startswith('There should be exactly one [MASK]'):
                 raise ValueError(
-                    'There should not be [UNK] tokens in the text!'
+                    'There should not be [MASK] tokens in the text!'
                 )
             else:
                 raise e
+        gap_idx += 1
+
     return results

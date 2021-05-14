@@ -140,3 +140,13 @@ class BertValidationTests(APITestCase):
         self.assertTrue(
             '[MASK]' in response.data['candidates'][0]
         )
+
+    def test_too_long_sentence(self):
+        """Test error with [MASK] token in candidates."""
+        url = reverse('choose_word_bert')
+        data = {
+            'text_parts': ['London is the '*1000, ' Great Britain.'*1000],
+            'candidates': [['capital', 'city']]
+        }
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
