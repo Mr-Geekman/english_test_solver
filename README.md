@@ -18,9 +18,13 @@ This task is solved using `bert-base-uncased` model on user's CPU.
 
 ## Installation
 
-1. Install Docker.
+1. Install Docker
 2. Install Docker Compose
-3. To explain later...
+3. Run `prepare.sh` to download Dockerfiles to build
+4. Run `docker-compose up` to start services
+5. Open `http://localhost:8080/` and use!
+
+To stop containers run `docker-compose stop`.
 
 ## Development
 
