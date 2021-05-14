@@ -31,5 +31,4 @@ jobs:
     - name: Test
       run: |
         cd backend/
-        ls
         python manage.py test
