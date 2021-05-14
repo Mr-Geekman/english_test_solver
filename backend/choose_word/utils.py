@@ -82,7 +82,7 @@ def process_sentence_bert(
         except ValueError as e:
             if str(e).startswith('There should be exactly one [MASK]'):
                 raise ValueError(
-                    "You shouldn't use [MASK] token in your text"
+                    'There should not be [UNK] tokens in the text!'
                 )
             else:
                 raise e

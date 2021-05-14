@@ -13,6 +13,7 @@ class BertScorerCorrection:
             self,
             model: BertForMaskedLM,
             tokenizer: PreTrainedTokenizer,
+            max_length: int = 512,
             batch_size: int = 64,
             device: int = -1
     ):
@@ -20,6 +21,7 @@ class BertScorerCorrection:
 
         :param model: Bert model for MLM from transformers library
         :param tokenizer: tokenizer for Bert model
+        :param max_length: maximum number of tokens to process
         :param batch_size: size of batch
         :param device: id of device
         """
@@ -27,6 +29,7 @@ class BertScorerCorrection:
         self.model = model.to(device=self.device)
         self.batch_size = batch_size
         self.tokenizer = tokenizer
+        self.max_length = max_length
 
     def __call__(
             self, sentences: List[str], candidates: List[List[str]]
@@ -44,7 +47,7 @@ class BertScorerCorrection:
             sentences,
             add_special_tokens=True,
             padding=True,
-            max_length=512,
+            max_length=self.max_length,
             truncation='longest_first',
         )
         # check, that there is one mask in each sentence
