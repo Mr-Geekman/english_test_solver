@@ -1,0 +1,33 @@
+name: backend
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.7
+    - name: Install dependencies
+      run: |
+        cd backend
+        python -m pip install --upgrade pip
+        pip install torch==1.8.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        mkdir models/BertBase
+        wget https://huggingface.co/bert-base-uncased/resolve/main/config.json -O models/BertBase/config.json
+        wget https://huggingface.co/bert-base-uncased/resolve/main/vocab.txt -O models/BertBase/vocab.txt
+        wget https://huggingface.co/bert-base-uncased/resolve/main/pytorch_model.bin -O models/BertBase/pytorch_model.bin
+    - name: Test with pytest
+      run: |
+        cd backend
+        python manage.py text
