@@ -16,11 +16,23 @@
     <transition name="global" mode="out-in" appear>
       <Loading v-if="is_show_loading" :times="300" />
     </transition>
+    <b-modal size="xs" title="An error occurred" v-model="error.is_show">
+      <template v-slot:default>
+        <span v-for="(e, index) in Object.values(error.payload)[0]" :key="index" class="text_error">
+          {{e}}
+        </span>
+      </template>
+
+      <template v-slot:modal-footer="{ok}">
+        <div>
+          <button class="btn btn-outline-danger" @click="ok">Ok</button>
+        </div>
+      </template>
+    </b-modal>
   </div>
 </template>
 
 <script>
-
 import Vue from 'vue'
 
 // Import Bootstrap
@@ -54,8 +66,11 @@ export default {
       is_show_loading: false,
       gaps: [],
       cache_gaps: [],
-      query: {},
-      is_show_result: false
+      is_show_result: false,
+      error: {
+        is_show: false,
+        payload: {}
+      }
     }
   },
   methods: {
@@ -110,7 +125,6 @@ export default {
         query.text_parts.push('');
 
       this.is_show_loading = true;
-      this.query = query;
       send.post('bert/', query).then((response) => {
         response.data.forEach((candidates, i) => {
           let gap = gaps_list[i];
@@ -119,18 +133,21 @@ export default {
             let candidate = gap.candidates[j];
             candidate.percent = Math.round(percent*100);
             if (!max_candidate || max_candidate.percent < percent)
-              max_candidate = {percent: percent, candidate: candidate};
+              max_candidate = candidate;
           });
           if (max_candidate.percent >= percent_min_range)
-            gap.set_text(max_candidate.candidate.word);
+            gap.set_text(max_candidate.word);
         })
         notify('Successful!');
         this.is_show_loading = false;
         this.is_show_result = true;
-      }).catch(response => {
+      }).catch(error => {
         this.is_show_loading = false;
-        notify(response.data, 'error');
-        console.log(response);
+        this.clear_result();
+        if (error.response.status === 400) {
+          this.error.payload = error.response.data;
+          this.error.is_show = true;
+        }
       });
     }
   }
@@ -217,5 +234,14 @@ select {
 
 .left-menu {
   height: calc(100vh - 56px);
+}
+
+.text_error {
+  background-color: #ffc3ca;
+  font-size: 1.1em;
+  display: inline-block;
+  width: 100%;
+  padding: 0.2rem;
+  margin-top: 0.2rem;
 }
 </style>
