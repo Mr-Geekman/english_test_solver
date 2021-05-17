@@ -7,7 +7,7 @@
          @keydown.ctrl.z="undo"
          @keydown.ctrl.enter.prevent="$emit('add_gap')"
          @keydown.shift.enter.prevent="$emit('add_gap')"></div>
-    <div class="placeholder">Type here your text with gaps.</div>
+    <div class="placeholder">Type here your text with gaps</div>
   </div>
 </template>
 
