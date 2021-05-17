@@ -4,15 +4,19 @@
       <div v-for="gap in gaps" :key="gap.id" class="d-flex list-item mb-2" :style="{'background-color': gap.color}">
         <transition-group name="list" tag="ul" class="list-group w-100">
           <li class="list-group-item d-flex justify-content-between" :key="-1">
-            <span class="font-weight-bold">GAP {{gap.id}}</span>
+            <span class="font-weight-bold">GAP {{ gap.id }}</span>
             <button class="btn btn-outline-danger" @click="remove_gap(gap)">
               <icon icon="trash"></icon>
             </button>
           </li>
           <transition-group name="list" tag="li"
                             class="list-group-item d-flex justify-content-center align-items-center list-item position-relative"
+                            :class="{'is-show-percent': candidate.is_show_percent}"
                             v-for="candidate in gap.candidates" :key="candidate.id">
-            <span v-if="candidate.percent !== null" class="mr-2 list-item" style="width: 4rem" :key="0">{{candidate.percent}}%</span>
+            <div class="list-item percent-indicator" :key="0"
+                 :style="{'background-color': gradient(candidate.percent)}">
+              <span>{{ candidate.percent }}%</span>
+            </div>
             <input class="form-control radius-right-none list-item" style="transition: all 0.3s ease"
                    :class="{'is-invalid': candidate.is_invalid}" v-model="candidate.word" placeholder="Candidate"
                    @change="edit_candidate(candidate, gap)" :key="1">
@@ -21,12 +25,14 @@
             </button>
           </transition-group>
           <li class="list-group-item d-flex list-item" :key="-2">
-            <input class="form-control radius-right-none" :class="{'is-invalid': gap.temp_candidate_invalid}" v-model="gap.temp_candidate"
+            <input class="form-control radius-right-none" :class="{'is-invalid': gap.temp_candidate_invalid}"
+                   v-model="gap.temp_candidate"
                    @keydown.enter="add_candidate(gap)"
                    @input="gap.temp_candidate_invalid = false"
                    @click="gap.temp_candidate_invalid = false"
                    placeholder="New candidate">
-            <button class="btn btn-outline-success radius-left-none" :class="{'btn-outline-danger': gap.temp_candidate_invalid}"
+            <button class="btn btn-outline-success radius-left-none"
+                    :class="{'btn-outline-danger': gap.temp_candidate_invalid}"
                     @click="add_candidate(gap)">
               <icon icon="plus"></icon>
             </button>
@@ -74,6 +80,26 @@ export default {
     }
   },
   methods: {
+    gradient: function (t) {
+      let max = 100;
+
+      let fromR = 200;
+      let fromG = 0;
+      let fromB = 0;
+
+      let toR = 100;
+      let toG = 150;
+      let toB = 0;
+
+      let deltaR = Math.round((toR - fromR) / max);
+      let deltaG = Math.round((toG - fromG) / max);
+      let deltaB = Math.round((toB - fromB) / max);
+
+      let R = fromR + t * deltaR;
+      let G = fromG + t * deltaG;
+      let B = fromB + t * deltaB;
+      return `rgb(${R}, ${G}, ${B})`;
+    },
     add: function () {
       let id = ++this.local_gap_ids
       let new_gap = {
@@ -103,6 +129,7 @@ export default {
         id: ++gap.temp_candidate_id,
         word: gap.temp_candidate,
         is_invalid: false,
+        is_show_percent: false,
         percent: null
       });
       gap.temp_candidate = '';
@@ -128,12 +155,36 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 ul, li {
   background: inherit;
 }
 
 li {
   padding: 0.2rem 0.5rem;
+}
+
+.percent-indicator {
+  color: rgb(240, 240, 250);
+  height: 100%;
+  border-top-left-radius: 0.25rem;
+  border-bottom-left-radius: 0.25rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 0;
+}
+
+li.is-show-percent {
+  input {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  .percent-indicator {
+    border: 1px solid #ced4da;
+    border-right: none;
+    width: 4rem;
+  }
 }
 </style>

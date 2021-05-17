@@ -81,7 +81,7 @@ export default {
       this.cache_gaps.forEach(g => {
         g.set_text(`GAP ${g.id}`);
         g.candidates.forEach(c => {
-          c.percent = null;
+          c.is_show_percent = false;
         });
       });
     },
@@ -132,6 +132,7 @@ export default {
           candidates.forEach((percent, j) => {
             let candidate = gap.candidates[j];
             candidate.percent = Math.round(percent*100);
+            candidate.is_show_percent = true;
             if (!max_candidate || max_candidate.percent < percent)
               max_candidate = candidate;
           });
