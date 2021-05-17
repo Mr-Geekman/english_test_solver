@@ -56,6 +56,12 @@ const validate_word = (word, gap, ignore_id = -1) => {
     notify('You shouldn\'t repeat candidates.', 'error');
     return true;
   }
+
+  if (word.split(' ').length > 3) {
+    console.log(word.split(' '));
+    notify('You shouldn\'t use candidate consists of more that 3 words in this algorithm, try to change the algorithm.', 'error');
+    return true;
+  }
   return false;
 };
 
