@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h5>Text: </h5>
     <div contenteditable="true" class="input" ref="input"
          @keydown.exact="$emit('clear_result')"
          @paste.prevent="paste"
@@ -27,6 +26,7 @@ export default {
   props: ['gaps', 'cache_gaps'],
   data: function () {
     return {
+
     }
   },
   methods: {
@@ -173,7 +173,6 @@ export default {
   max-height: calc(100vh - 110px);
   overflow-y: auto;
 }
-
 
 </style>
 
