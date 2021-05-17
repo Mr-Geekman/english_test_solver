@@ -1,18 +1,20 @@
 <template>
   <div class="text-editor-container">
-    <div contenteditable="true" class="input" :class="{transparent: is_input_transparent}" ref="input"
+    <div contenteditable="true" class="input" id="text_editor"
+         :class="{transparent: is_input_transparent}" ref="input"
          @input="is_input_transparent = $refs.input.textContent === ''"
          @keydown.exact="$emit('clear_result')"
          @paste.prevent="paste"
          @keydown.ctrl.z="undo"
          @keydown.ctrl.enter.prevent="$emit('add_gap')"
-         @keydown.shift.enter.prevent="$emit('add_gap')"></div>
+         @keydown.shift.enter.prevent="$emit('add_gap')"
+    ></div>
     <div class="placeholder">Type here your text with gaps</div>
   </div>
 </template>
 
 <script>
-
+/*eslint-disable*/
 const gap = (id, color) => {
   let node = document.createElement("SPAN");
   node.id = `gap_${id}`;
@@ -21,6 +23,27 @@ const gap = (id, color) => {
   node.textContent = `GAP ${id}`;
   node.style.backgroundColor  = color;
   return node;
+};
+
+const fix_space_around_gap = (parent) => {
+  let index_append = 0;
+  Array.from(parent.childNodes).forEach((node, index) => {
+    index += index_append;
+    if (node.nodeName === 'DIV') {
+      fix_space_around_gap(node);
+    } else if (node.nodeName === 'SPAN' && node.className === 'gap') {
+      if (index === 0) {
+        parent.insertBefore(document.createTextNode('_'), node);
+        index += 1;
+        index_append += 1;
+      }
+      let node_after_gap = parent.childNodes[index+1];
+      if (!node_after_gap || node_after_gap.nodeName === 'BR' || (node_after_gap.nodeName === 'SPAN' && node_after_gap.className === 'gap')) {
+        parent.insertBefore(document.createTextNode('_'), node_after_gap);
+        index_append += 1;
+      }
+    }
+  });
 };
 
 export default {
@@ -86,24 +109,69 @@ export default {
       let sel = window.getSelection();
       let node = sel.focusNode;
       let temp_node = node;
-      while (temp_node.className !== 'input') {
-        if (!temp_node || temp_node.nodeName === 'BODY')
+      while (temp_node.id !== 'text_editor') {
+        if (!temp_node || temp_node.nodeName === 'BODY' || (temp_node.nodeName === 'SPAN' && temp_node.className === 'gap'))
           break;
         temp_node = temp_node.parentElement;
       }
-      if (!temp_node || temp_node.nodeName === 'BODY')
+      if (!temp_node || temp_node.nodeName === 'BODY' || (temp_node.nodeName === 'SPAN' && temp_node.className === 'gap'))
         node = this.$refs.input;
       let select_start_offset = sel.anchorOffset;
       let select_end_offset = sel.focusOffset;
       let gap_node = gap(new_gap.id, new_gap.color);
+      if (node.nodeName === 'DIV') {
+        Array.from(node.childNodes).forEach(n => {
+          if (n.nodeName === 'BR')
+            n.remove();
+        });
+        node.appendChild(document.createTextNode('_'));
+        let text_node = document.createTextNode('');
+        node.appendChild(text_node);
+        node = text_node;
+      }
       if (node.nodeName === '#text') {
         let parent = node.parentElement;
+
+        // Add space middle GAPs, when paste GAP after GAP.
+        let index_child = Array.prototype.indexOf.call(parent.childNodes, node);
+        let is_set_space = false;
+        if (index_child) {
+          let node_before_current = parent.childNodes.item(index_child-1);
+          if (node_before_current.nodeName === 'SPAN' && node_before_current.className === 'gap')
+            is_set_space = true;
+          if (node_before_current.nodeName === 'BR')
+            node_before_current.remove();
+        }
+
         parent.insertBefore(gap_node, node);
-        parent.insertBefore(document.createTextNode(node.textContent.slice(0, select_start_offset)), gap_node);
+        let text_before_gap = node.textContent.slice(0, select_start_offset);
+        parent.insertBefore(document.createTextNode(text_before_gap), gap_node);
+        if (is_set_space && text_before_gap === '')
+          parent.insertBefore(document.createTextNode(' '), gap_node);
         node.textContent = node.textContent.slice(select_end_offset);
-        if (node.textContent === "")
-          node.textContent = " ";
-      } else if (node.className === 'input') {
+        if (node.textContent === "") {
+          node.textContent = '_';
+          let rng = document.createRange();
+          rng.setStart(node, 1);
+          rng.collapse(true);
+          sel.removeAllRanges();
+          sel.addRange(rng);
+        }
+      } else if (node.id === 'text_editor') {
+
+        // let n1 = document.createElement("SPAN");
+        // n1.textContent = "_";
+        // let n2 = document.createElement("SPAN");
+        // n2.textContent = "_";
+        // node.appendChild(n1);
+        // node.appendChild(gap_node);
+        // node.appendChild(n2);
+
+        Array.from(node.childNodes).forEach(n => {
+          if (n.nodeName === 'BR')
+            n.remove();
+        });
+
         node.appendChild(document.createTextNode('_'));
         node.appendChild(gap_node);
         let dot = document.createTextNode('_');
@@ -124,14 +192,15 @@ export default {
         new_gap.node = gap_node;
       });
       this.$emit('clear_result');
+      this.is_input_transparent = false;
     }
   },
   mounted() {
     let remove_recursive = (n, parent_node) => {
       if (n.nodeName === '#text')
-        return;
+        return true;
       if (n.nodeName !== 'SPAN' || n.className !== 'gap')
-        Array.from(n.childNodes).forEach((child_node) => remove_recursive(child_node, parent_node));
+        return Array.from(n.childNodes).reduce((temp, child_node) => remove_recursive(child_node, parent_node) || temp, false);
       else {
         if (!parent_node.parentElement || Array.prototype.indexOf.call(parent_node.parentElement.childNodes, parent_node) === -1) {
           let id = Number.parseInt(n.id.slice(4));
@@ -140,14 +209,21 @@ export default {
             this.gaps[index].remove();
         }
       }
+      return false;
     };
     let observer = new MutationObserver((mutations) => {
       this.$nextTick(() => {
+        let is_remove_text = false;
         mutations.forEach(mutation => {
           if (mutation.type !== 'childList' || !mutation.removedNodes)
             return;
-          Array.from(mutation.removedNodes).forEach(n => remove_recursive(n, n));
+          Array.from(mutation.removedNodes).forEach(n => {
+            if (remove_recursive(n, n))
+              is_remove_text = true;
+          });
         });
+        if (is_remove_text)
+          fix_space_around_gap(this.$refs.input);
       });
     });
     observer.observe(this.$refs.input, { attributes: true, childList: true, characterData: false, subtree: true });
@@ -198,12 +274,29 @@ export default {
 
 </style>
 
-<style>
+<style lang="scss">
+
+//span {
+//  min-width: 10px;
+//  display: inline-block;
+//  &:before {
+//    content: ":";
+//  }
+//  &:after {
+//    content: ":";
+//  }
+//}
+
 .gap {
   /*user-select: none;*/
   font-weight: bold;
   border: 1px solid #dee2e6;
   padding: 0 4px;
+  //margin: 0 4px;
+}
+
+.input > * {
+  //margin: 0 10px;
 }
 
 .input > div {
