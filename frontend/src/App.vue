@@ -16,7 +16,7 @@
     <transition name="global" mode="out-in" appear>
       <Loading v-if="is_show_loading" :times="300" />
     </transition>
-    <b-modal size="xs" title="An error occurred" v-model="error.is_show">
+    <b-modal title="An error occurred" v-model="error.is_show">
       <template v-slot:default>
         <span v-for="(e, index) in Object.values(error.payload)[0]" :key="index" class="text_error">
           {{e}}
