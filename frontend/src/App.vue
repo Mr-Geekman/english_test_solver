@@ -145,9 +145,11 @@ export default {
       }).catch(error => {
         this.is_show_loading = false;
         this.clear_result();
-        if (error.response.status === 400) {
+        if (error?.response?.status === 400) {
           this.error.payload = error.response.data;
           this.error.is_show = true;
+        } else {
+          notify("Backend response error", 'error');
         }
       });
     }
