@@ -1,11 +1,13 @@
 <template>
-  <div>
-    <div contenteditable="true" class="input" ref="input"
+  <div class="text-editor-container">
+    <div contenteditable="true" class="input" :class="{transparent: is_input_transparent}" ref="input"
+         @input="is_input_transparent = $refs.input.textContent === ''"
          @keydown.exact="$emit('clear_result')"
          @paste.prevent="paste"
          @keydown.ctrl.z="undo"
          @keydown.ctrl.enter.prevent="$emit('add_gap')"
          @keydown.shift.enter.prevent="$emit('add_gap')"></div>
+    <div class="placeholder">Type here your text with gaps.</div>
   </div>
 </template>
 
@@ -26,7 +28,7 @@ export default {
   props: ['gaps', 'cache_gaps'],
   data: function () {
     return {
-
+      is_input_transparent: true
     }
   },
   methods: {
@@ -153,14 +155,18 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+.text-editor-container {
+  position: relative;
+}
+
 .input {
   display: block;
   width: 100%;
   height: auto;
   min-height: 50vh;
   padding: 0.375rem 0.75rem;
-  font-size: 1rem;
+  font-size: 1.2em;
   font-weight: 400;
   line-height: 1.5;
   color: #495057;
@@ -172,6 +178,22 @@ export default {
   outline: none;
   max-height: calc(100vh - 110px);
   overflow-y: auto;
+  background-color: rgba(255, 255, 255, 1);
+  z-index: 10;
+  position: relative;
+
+  &.transparent {
+    background-color: rgba(255, 255, 255, 0.5);
+  }
+}
+
+.placeholder {
+  padding: 0.375rem 0.75rem;
+  z-index: 1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 1.2em;
 }
 
 </style>
