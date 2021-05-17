@@ -2,15 +2,15 @@
   <div>
     <transition-group name="list" class="d-flex items flex-column">
       <div v-for="gap in gaps" :key="gap.id" class="d-flex list-item mb-2" :style="{'background-color': gap.color}">
-        <transition-group name="list" tag="ul" class="list-group w-100">
-          <li class="list-group-item d-flex justify-content-between" :key="-1">
+        <transition-group name="list" tag="ul" class="list-group w-100 items">
+          <li class="list-group-item d-flex justify-content-between list-item" :key="-1">
             <span class="font-weight-bold">GAP {{ gap.id }}</span>
             <button class="btn btn-outline-danger" @click="remove_gap(gap)">
               <icon icon="trash"></icon>
             </button>
           </li>
           <transition-group name="list" tag="li"
-                            class="list-group-item d-flex justify-content-center align-items-center list-item position-relative"
+                            class="list-group-item d-flex justify-content-center align-items-center list-item list-right"
                             :class="{'is-show-percent': candidate.is_show_percent}"
                             v-for="candidate in gap.candidates" :key="candidate.id">
             <div class="list-item percent-indicator" :key="0"

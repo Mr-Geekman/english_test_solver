@@ -213,8 +213,12 @@ export default {
   transform: translateY(30px);
 }
 
-.list-leave-to.list-right, .list-enter.list-right {
+.list-enter.list-right {
   transform: translateX(30px);
+}
+
+.list-leave-to.list-right {
+  transform: translateY(30px);
 }
 
 .list-leave-active {
