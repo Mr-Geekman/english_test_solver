@@ -133,7 +133,7 @@ export default {
             let candidate = gap.candidates[j];
             candidate.percent = Math.round(percent*100);
             candidate.is_show_percent = true;
-            if (!max_candidate || max_candidate.percent < percent)
+            if (!max_candidate || max_candidate.percent < candidate.percent)
               max_candidate = candidate;
           });
           if (max_candidate.percent >= percent_min_range)
