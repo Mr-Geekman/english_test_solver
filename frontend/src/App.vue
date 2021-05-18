@@ -2,12 +2,12 @@
   <div id="app">
     <Header @start="start" />
     <div class="row m-0">
-      <div class="col-2 border-right overflow-auto pt-2 left-menu">
+      <div class="col-5 col-xl-2 col-md-4 border-right overflow-auto pt-2 left-menu">
         <WordSelection ref="word_selection" :gaps="gaps" :cache_gaps="cache_gaps"
                        @add_gap="(new_gap) => {$refs.text_editor.add_gap(new_gap)}"
                        @clear_result="clear_result" />
       </div>
-      <div class="col-10 pt-2">
+      <div class="col-5 col-xl-10 col-md-8 pt-2">
         <TextEditor ref="text_editor" :gaps="gaps" :cache_gaps="cache_gaps"
                     @add_gap="() => $refs.word_selection.add()"
                     @clear_result="clear_result" />

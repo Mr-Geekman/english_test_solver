@@ -184,7 +184,7 @@ li.is-show-percent {
   .percent-indicator {
     border: 1px solid #ced4da;
     border-right: none;
-    width: 4rem;
+    width: 8rem;
   }
 }
 </style>
