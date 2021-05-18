@@ -2,7 +2,7 @@
   <div id="app">
     <Header @start="start" />
     <div class="row m-0">
-      <div class="col-5 col-xl-2 col-md-4 border-right overflow-auto pt-2 left-menu">
+      <div class="col-5 col-xl-2 col-md-4 border-right pt-2 left-menu">
         <WordSelection ref="word_selection" :gaps="gaps" :cache_gaps="cache_gaps"
                        @add_gap="(new_gap) => {$refs.text_editor.add_gap(new_gap)}"
                        @clear_result="clear_result" />
@@ -241,6 +241,8 @@ select {
 
 .left-menu {
   height: calc(100vh - 56px);
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .text_error {
