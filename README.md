@@ -31,6 +31,9 @@ To stop containers run `docker-compose stop`.
 
 To remove them `docker-compose rm`.
 
+## Demo
+![Animation demonstrating the work](demo.gif)
+
 ## Development
 
 Look at REAMDE files of frontend and backend parts.
