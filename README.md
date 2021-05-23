@@ -16,7 +16,9 @@ Frontend part uses Vue.js.
 
 ### Choose a suitable word from a given list
 
-This task is solved using `bert-base-uncased` model on user's CPU.
+This task is solved using two algorithms on user's CPU: 
+1. BERT-based model (`bert-base-uncased`).
+2. GPT-based model (`gpt2`)
 
 ## Installation
 
