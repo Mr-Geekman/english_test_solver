@@ -25,9 +25,9 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
         mkdir models/bert-base-uncased
-        wget https://huggingface.co/bert-base-uncased/resolve/main/config.json -O models/BertBase/config.json
-        wget https://huggingface.co/bert-base-uncased/resolve/main/vocab.txt -O models/BertBase/vocab.txt
-        wget https://huggingface.co/bert-base-uncased/resolve/main/pytorch_model.bin -O models/BertBase/pytorch_model.bin
+        wget https://huggingface.co/bert-base-uncased/resolve/main/config.json -O models/bert-base-uncased/config.json
+        wget https://huggingface.co/bert-base-uncased/resolve/main/vocab.txt -O models/bert-base-uncased/vocab.txt
+        wget https://huggingface.co/bert-base-uncased/resolve/main/pytorch_model.bin -O models/bert-base-uncased/pytorch_model.bin
 
         mkdir models/gpt2
         wget https://huggingface.co/gpt2/resolve/main/config.json -O models/gpt2/config.json

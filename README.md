@@ -18,7 +18,7 @@ Frontend part uses Vue.js.
 
 This task is solved using two algorithms on user's CPU: 
 1. BERT-based model (`bert-base-uncased`).
-2. GPT-based model (`gpt2`)
+2. GPT-2-based model (`gpt2`)
 
 ## Installation
 

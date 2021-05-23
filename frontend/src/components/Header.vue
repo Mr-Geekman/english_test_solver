@@ -22,6 +22,7 @@
         <p>To the left of the button Start, there is a button to select algorithm for prediction.</p>
         <ol class="pl-3">
           <li>BERT. This algorithm is based on BERT Masked Language Model. You can't use it with candidates consists of many words and blanks.</li>
+          <li>GPT-2. This algorithm is based on GPT-2 perplexity scoring. You can use it with bigger candidates and blanks, but it is slower.</li>
         </ol>
       </template>
       <template v-slot:modal-footer="{ok}">
