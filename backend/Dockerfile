@@ -13,16 +13,16 @@ RUN pip install torch==1.8.1+cpu -f https://download.pytorch.org/whl/torch_stabl
 RUN pip install --no-cache-dir -r requirements.txt 
 
 # download models for backend
-RUN mkdir models/BertBase
-RUN wget https://huggingface.co/bert-base-uncased/resolve/main/config.json -O models/BERTBase/config.json
-RUN wget https://huggingface.co/bert-base-uncased/resolve/main/vocab.txt -O models/BERTBase/vocab.txt
-RUN wget https://huggingface.co/bert-base-uncased/resolve/main/pytorch_model.bin -O models/BERTBase/pytorch_model.bin
+RUN mkdir models/bert-base-uncased
+RUN wget https://huggingface.co/bert-base-uncased/resolve/main/config.json -O models/bert-base-uncased/config.json
+RUN wget https://huggingface.co/bert-base-uncased/resolve/main/vocab.txt -O models/bert-base-uncased/vocab.txt
+RUN wget https://huggingface.co/bert-base-uncased/resolve/main/pytorch_model.bin -O models/bert-base-uncased/pytorch_model.bin
 
-RUN mkdir models/GPTBase
-RUN wget https://huggingface.co/gpt2/resolve/main/config.json -O models/GPTBase/config.json
-RUN wget https://huggingface.co/gpt2/resolve/main/vocab.json -O models/GPTBase/vocab.json
-RUN wget https://huggingface.co/gpt2/resolve/main/merges.txt -O models/GPTBase/merges.txt
-RUN wget https://huggingface.co/gpt2/resolve/main/pytorch_model.bin -O models/GPTBase/pytorch_model.bin
+RUN mkdir models/gpt2
+RUN wget https://huggingface.co/gpt2/resolve/main/config.json -O models/gpt2/config.json
+RUN wget https://huggingface.co/gpt2/resolve/main/vocab.json -O models/gpt2/vocab.json
+RUN wget https://huggingface.co/gpt2/resolve/main/merges.txt -O models/gpt2/merges.txt
+RUN wget https://huggingface.co/gpt2/resolve/main/pytorch_model.bin -O models/gpt2/pytorch_model.bin
 
 # make migrations
 RUN python manage.py makemigrations && python manage.py migrate
