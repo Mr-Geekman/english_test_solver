@@ -44,6 +44,11 @@ export default {
       is_show_help_box: false
     }
   },
+  watch: {
+    select_algorithm: function (val) {
+      this.$emit('change_algorithm', val);
+    }
+  },
   computed: {
     algorithms: () => algorithms
   }

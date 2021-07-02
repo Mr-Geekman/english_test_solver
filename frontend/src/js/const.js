@@ -19,7 +19,7 @@ export const send = axios.create({
 
 export const algorithms = [
   {value: 'bert/', text: 'BERT'},
-  {value: 'other/', text: 'Other'}
+  {value: 'gpt/', text: 'GPT'}
 ];
 export const percent_min_range = 85;
 

@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Header @start="start" />
+    <Header @start="start" @change_algorithm="algorithm = $event" />
     <div class="row m-0">
       <div class="col-5 col-xl-2 col-md-4 border-right pt-2 left-menu">
         <WordSelection ref="word_selection" :gaps="gaps" :cache_gaps="cache_gaps"
@@ -51,7 +51,7 @@ import WordSelection from "@/components/WordSelection";
 import Loading from "@/components/Loading";
 
 // Import axios and notify from const
-import {notify, percent_min_range, send} from "@/js/const";
+import {default_algorithm, notify, percent_min_range, send} from "@/js/const";
 
 export default {
   name: 'App',
@@ -63,6 +63,7 @@ export default {
   },
   data: function () {
     return {
+      algorithm: default_algorithm,
       is_show_loading: false,
       gaps: [],
       cache_gaps: [],
@@ -125,7 +126,7 @@ export default {
         query.text_parts.push('');
 
       this.is_show_loading = true;
-      send.post('bert/', query).then((response) => {
+      send.post(this.algorithm, query).then((response) => {
         response.data.forEach((candidates, i) => {
           let gap = gaps_list[i];
           let max_candidate = null;
