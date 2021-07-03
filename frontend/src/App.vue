@@ -1,25 +1,25 @@
 <template>
   <div id="app">
-    <Header @start="start" @change_algorithm="algorithm = $event" />
+    <Header @start="start" @change_algorithm="algorithm = $event"/>
     <div class="row m-0">
       <div class="col-5 col-xl-2 col-md-4 border-right pt-2 left-menu">
         <WordSelection ref="word_selection" :gaps="gaps" :cache_gaps="cache_gaps"
                        @add_gap="(new_gap) => {$refs.text_editor.add_gap(new_gap)}"
-                       @clear_result="clear_result" />
+                       @clear_result="clear_result"/>
       </div>
       <div class="col-5 col-xl-10 col-md-8 pt-2">
         <TextEditor ref="text_editor" :gaps="gaps" :cache_gaps="cache_gaps"
                     @add_gap="() => $refs.word_selection.add()"
-                    @clear_result="clear_result" />
+                    @clear_result="clear_result"/>
       </div>
     </div>
     <transition name="global" mode="out-in" appear>
-      <Loading v-if="is_show_loading" :times="300" />
+      <Loading v-if="is_show_loading" :times="300"/>
     </transition>
     <b-modal title="An error occurred" v-model="error.is_show">
       <template v-slot:default>
-        <span v-for="(e, index) in Object.values(error.payload)[0]" :key="index" class="text_error">
-          {{e}}
+        <span v-for="(e, index) in error.payload" :key="index" class="text_error">
+          {{ e }}
         </span>
       </template>
 
@@ -39,6 +39,7 @@ import Vue from 'vue'
 import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+
 Vue.use(BootstrapVue);
 
 // Import Icons
@@ -132,7 +133,7 @@ export default {
           let max_candidate = null;
           candidates.forEach((percent, j) => {
             let candidate = gap.candidates[j];
-            candidate.percent = Math.round(percent*100);
+            candidate.percent = Math.round(percent * 100);
             candidate.is_show_percent = true;
             if (!max_candidate || max_candidate.percent < candidate.percent)
               max_candidate = candidate;
@@ -147,7 +148,23 @@ export default {
         this.is_show_loading = false;
         this.clear_result();
         if (error?.response?.status === 400) {
-          this.error.payload = error.response.data;
+          let recursion_array_resolve = (item) => {
+            let result = [];
+            if (typeof item == 'object') {
+              for (let i in item) {
+                let part = recursion_array_resolve(item[i]);
+                if (part.length > 0) {
+                  if (typeof i == 'string' && Number.parseInt(i) != i)
+                    part[0] = i + ": " + part[0];
+                  Array.prototype.push.apply(result, part);
+                }
+              }
+            } else {
+              result.push(item);
+            }
+            return result;
+          };
+          this.error.payload = recursion_array_resolve(error.response.data);
           this.error.is_show = true;
         } else {
           notify("Backend response error", 'error');
@@ -230,6 +247,7 @@ export default {
   right: 0;
   z-index: 9999;
 }
+
 /*End*/
 
 .animated {
