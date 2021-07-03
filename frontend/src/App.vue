@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Header @start="start" @change_algorithm="algorithm = $event"/>
+    <Header @start="start" @change_algorithm="($event) => {algorithm = $event; clear_result()}"/>
     <div class="row m-0">
       <div class="col-5 col-xl-2 col-md-4 border-right pt-2 left-menu">
         <WordSelection ref="word_selection" :gaps="gaps" :cache_gaps="cache_gaps"
