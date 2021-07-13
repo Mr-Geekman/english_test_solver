@@ -14,7 +14,7 @@ class BertScorerCorrection:
             model: BertForMaskedLM,
             tokenizer: PreTrainedTokenizer,
             max_length: int = 512,
-            batch_size: int = 64,
+            batch_size: int = 16,
             device: int = -1
     ):
         """Init object.

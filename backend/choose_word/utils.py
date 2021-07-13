@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 from copy import copy
 
 import numpy as np
@@ -42,19 +42,44 @@ def process_text_bert(
         cnt = sentence.count(unk_token)
         sentences_candidates.append(candidates[cur_cnt:cur_cnt+cnt])
         cur_cnt += cnt
-    # process each sentence separately
-    results = []
-    for sentence, sentence_candidates in zip(sentences, sentences_candidates):
-        results += process_sentence_bert(sentence, sentence_candidates)
 
-    # return results
+    # gather input data from all sentences
+    input_sentences = []
+    input_candidates = []
+    for sentence, sentence_candidates in zip(sentences, sentences_candidates):
+        new_sentences, new_candidates = create_tasks_sentence_bert(
+            sentence, sentence_candidates
+        )
+        input_sentences += new_sentences
+        input_candidates += new_candidates
+
+    # run algorithm for all sentences
+    try:
+        scores = ChooseWordConfig.bert_scorer_correction(
+            input_sentences, input_candidates
+        )
+        normalized_scores = np.exp([
+            [np.mean(scores_candidate) for scores_candidate in scores_sentence]
+            for scores_sentence in scores
+        ])
+        normalization = np.sum(normalized_scores, axis=-1)[:, np.newaxis]
+        percents = normalized_scores / normalization
+        results = percents.tolist()
+    except ValueError as e:
+        if str(e).startswith('There should be exactly one [MASK]'):
+            raise ValueError(
+                'There should not be [MASK] tokens in the text!'
+            )
+        else:
+            raise e
+
     return results
 
 
-def process_sentence_bert(
+def create_tasks_sentence_bert(
         sentence: str, candidates: List[List[str]]
-) -> List[List[float]]:
-    """Process all gaps with candidates within sentence using BERT algorithm.
+) -> Tuple[List[str], List[List[str]]]:
+    """Create tasks for all gaps within sentence for BERT algorithm.
 
     :param sentence: sentence to process
     :param candidates: list of candidates for each gap
@@ -71,7 +96,8 @@ def process_sentence_bert(
         truncation='do_not_truncate',
     )['input_ids']
 
-    results = []
+    input_sentences = []
+    input_candidates = []
     # process each gap separately
     gap_idx = 0
     for i, token_id in enumerate(tokenized_sentence):
@@ -98,26 +124,11 @@ def process_sentence_bert(
                                      start_idx:end_idx
                                      ]
         current_sentence = tokenizer.decode(current_tokenized_sentence)
-
-        try:
-            scores = ChooseWordConfig.bert_scorer_correction(
-                [current_sentence], [candidates[gap_idx]]
-            )[0]
-            # normalize scores
-            normalized_scores = np.exp([np.mean(x) for x in scores])
-            percents = normalized_scores / np.sum(normalized_scores)
-            results.append(percents)
-        except ValueError as e:
-            if str(e).startswith('There should be exactly one [MASK]'):
-                raise ValueError(
-                    'There should not be [MASK] tokens in the text!'
-                )
-            else:
-                raise e
-
+        input_sentences.append(current_sentence)
+        input_candidates.append(candidates[gap_idx])
         gap_idx += 1
 
-    return results
+    return input_sentences, input_candidates
 
 
 def process_text_gpt(

@@ -42,36 +42,6 @@ def validator_no_unk_mask_tokens(tokenizer):
     return validate_no_unk_mask_tokens
 
 
-# def validate_no_unk_gpt(string_to_check):
-#     """Check absense of [UNK] tokens in value.
-#
-#     :param string_to_check: string to validate
-#
-#     :returns: validated value
-#     """
-#     tokenizer = ChooseWordConfig.gpt_tokenizer
-#
-#     tokenized_string = tokenizer(
-#         string_to_check,
-#         add_special_tokens=False,
-#         truncation='do_not_truncate',
-#     )['input_ids']
-#     # validate absense of [UNK] tokens
-#     if tokenized_string.count(tokenizer.unk_token_id):
-#         raise ValidationError(
-#             'There should not be [UNK] tokens in the text, '
-#             'you probably typed something non-typical!'
-#         )
-#
-#     # validate absense of [MASK]-tokens
-#     if tokenized_string.count(tokenizer.mask_token_id):
-#         raise ValidationError(
-#             'There should not be [MASK] tokens in the text!'
-#         )
-#
-#     return string_to_check
-
-
 def validate_candidates_numbers(list_candidates: List[str]):
     """Check that there are good number of candidates.
 

@@ -31,3 +31,5 @@ class ChooseWordConfig(AppConfig):
         GPT2LMHeadModel.from_pretrained(gpt_path),
         gpt_tokenizer, max_length=max_gpt_size
     )
+
+    benchmark_data_path = os.path.join(BASE_DIR, name, 'data', 'sdamgia.json')
